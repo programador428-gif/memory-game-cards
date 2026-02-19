@@ -91,3 +91,11 @@ body {
     grid-template-columns: repeat(3, 1fr);
   }
 }
+
+.oculto {
+  visibility: hidden;
+}
+
+.visible {
+  visibility: visible;
+}
