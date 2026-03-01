@@ -1,20 +1,17 @@
-// --- 1. SELECCIÓN DE ELEMENTOS (DOM) ---
 const btnReset = document.getElementById("reset");
 const tablero = document.querySelector(".game");
 const contadorTxt = document.getElementById("contador");
 const todasLasCartas = Array.from(document.querySelectorAll(".cartas"));
 
-// --- 2. ESTADO DE LA APLICACIÓN ---
 let eleccion = [];
 let contador = 0;
+let parejas = 0;
 let bloqueado = false;
-
-// --- 3. FUNCIONES DE LÓGICA (Helpers) ---
 
 const mezclarCartas = (lista) => {
   for (let i = lista.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [lista[i], lista[j]] = [lista[j], lista[i]]; // Destructuring swap
+    [lista[i], lista[j]] = [lista[j], lista[i]];
   }
   return lista;
 };
@@ -29,9 +26,6 @@ const mostrarCarta = (carta) => {
   img.classList.replace("oculto", "visible");
 };
 
-// --- 4. CONTROLADORES DE EVENTOS (Handlers) ---
-
-// Reiniciar Juego
 btnReset.addEventListener("click", () => {
   contador = 0;
   contadorTxt.textContent = 0;
@@ -47,11 +41,8 @@ btnReset.addEventListener("click", () => {
   });
 });
 
-// Lógica del Click
 tablero.addEventListener("click", (e) => {
   const carta = e.target.closest(".cartas");
-
-  // Validaciones de guardia (Early Returns)
   if (
     !carta ||
     bloqueado ||
@@ -67,24 +58,25 @@ tablero.addEventListener("click", (e) => {
   if (eleccion.length === 2) {
     bloqueado = true;
     const [c1, c2] = eleccion;
-
     const esPareja =
       c1.querySelector("img").src === c2.querySelector("img").src;
 
     if (esPareja) {
-      // ACIERTO
+      parejas++;
       c1.classList.add("acertada");
       c2.classList.add("acertada");
-      contador++;
-      contadorTxt.textContent = contador;
       eleccion = [];
       bloqueado = false;
 
-      if (contador === todasLasCartas.length / 2) {
-        setTimeout(() => alert("¡Felicidades!"), 200);
+      if (parejas === todasLasCartas.length / 2) {
+        setTimeout(
+          () => alert(`¡Felicidades lo lograstes en ${contador} intentos!`),
+          200,
+        );
       }
     } else {
-      // FALLO: Aquí corregimos el error de ocultar ambas
+      contador++;
+      contadorTxt.textContent = contador;
       setTimeout(() => {
         ocultarCarta(c1);
         ocultarCarta(c2);
